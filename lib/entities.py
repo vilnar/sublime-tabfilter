@@ -77,7 +77,7 @@ class Tab(object):
 
     def get_details(self) -> List[str]:
         """Returns a list of tab details."""
-        details: List[str] = [self.get_title(), self.get_subtitle()]
+        details: List[str] = [self.get_title()]
 
         captions: List[str] = self.get_captions()
 

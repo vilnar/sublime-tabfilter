@@ -130,5 +130,5 @@ class CommonPrefixTabSetting(TabSetting):
         if prefix > 0:
             for tab in tabs:
                 if tab.is_file_view():
-                    tab.set_subtitle(f"...{tab.get_subtitle()[prefix:]}")
+                    tab.set_subtitle(f"{tab.get_subtitle()[prefix:]}")
         return tabs

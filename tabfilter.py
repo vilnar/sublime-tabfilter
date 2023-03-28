@@ -12,6 +12,9 @@ from .lib.settings import (
     IncludePathTabSetting,
     ShowGroupCaptionTabSetting,
 )
+from functools import cmp_to_key
+
+from .sort_tabs import compare_tab_by_last_activation
 
 
 class TabFilterCommand(sublime_plugin.WindowCommand):
@@ -29,7 +32,8 @@ class TabFilterCommand(sublime_plugin.WindowCommand):
         idx: int = 0
         self.views = []
         for group_idx in group_indexes:
-            for view in self.window.views_in_group(group_idx):
+            sort_views = sorted(self.window.views_in_group(group_idx), key=cmp_to_key(compare_tab_by_last_activation))
+            for view in sort_views:
                 self.views.append(view)
                 if self.window.active_view().id() == view.id():
                     # save index for later usage
@@ -60,7 +64,8 @@ class TabFilterCommand(sublime_plugin.WindowCommand):
                 tabs,
                 self.on_done,
                 on_highlight=self.on_highlighted,
-                selected_index=self.current_tab_idx
+                selected_index=self.current_tab_idx,
+                placeholder="find tabs..."
             )
             return
 
@@ -78,6 +83,16 @@ class TabFilterCommand(sublime_plugin.WindowCommand):
         """Callback handler to focus the currently highlighted Tab."""
         if index > -1 and index < len(self.views):
             self.window.focus_view(self.views[index])
+
+            # Try preview without change MRU
+            # WARNING: not work!!!
+            # sublime API doesn't have a function focus_view() without change MRU
+            # https://github.com/sublimehq/sublime_text/issues/2101
+            # open_file() is not suitable, still the MRU changes
+            # view = self.views[index]
+            # if view.file_name():
+            #     self.window.open_file(self.views[index].file_name(), sublime.TRANSIENT)
+
 
     def run(self, active_group_only=False) -> None:
         """Shows a quick panel to filter and select tabs from
