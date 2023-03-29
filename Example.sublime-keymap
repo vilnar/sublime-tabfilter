@@ -1,7 +1,7 @@
 [
-    { 
+    {
         "keys": ["shift+alt+p"],
-        "command": "tab_filter" 
+        "command": "tab_filter"
     },
     {
         "keys": ["shift+alt+a"],
